@@ -17,6 +17,8 @@ func TestCleanInput(t *testing.T) {
 			expected: []string{"helloworld"}},
 		"empty string": {input: "",
 			expected: []string{""}},
+		"should lowecase everything": {input: "HelLO wOrLD",
+			expected: []string{"hello world"}},
 	}
 
 	for name, tc := range tests {

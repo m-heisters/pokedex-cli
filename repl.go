@@ -13,23 +13,42 @@ type cliCommand struct {
 	callback    func() error
 }
 
-var supportedCommands = map[string]cliCommand{
-	"exit": {
-		name:        "exit",
-		description: "Exit the pokedex",
-		callback:    commandExit,
-	},
-}
+var supportedCommands map[string]cliCommand
 
-func cleanInput(text string) []string {
-	trimmed := strings.TrimSpace(strings.ToLower(text))
-	return strings.Split(trimmed, " ")
+func init() {
+	supportedCommands = map[string]cliCommand{
+		"help": {
+			name:        "help",
+			description: "Displays a help message",
+			callback:    commandHelp,
+		},
+		"exit": {
+			name:        "exit",
+			description: "Exit the pokedex",
+			callback:    commandExit,
+		},
+	}
 }
 
 func commandExit() error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
+}
+
+func commandHelp() error {
+	fmt.Println("Welcome to the Pokedex!")
+	fmt.Println("Usage: ")
+	for _, item := range supportedCommands {
+		fmt.Printf("%v: %v\n", item.name, item.description)
+
+	}
+	return nil
+}
+
+func cleanInput(text string) []string {
+	trimmed := strings.TrimSpace(strings.ToLower(text))
+	return strings.Split(trimmed, " ")
 }
 
 func StartRepl() {
