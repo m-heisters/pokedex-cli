@@ -8,12 +8,13 @@ import (
 	"os"
 )
 
-const POKE_API_LOCATION_AREA = "https://pokeapi.co/api/v2/location-area/"
+var config Config
 
 type cliCommand struct {
 	name        string
 	description string
 	callback    func() error
+	config      *Config
 }
 
 var supportedCommands map[string]cliCommand
@@ -24,17 +25,30 @@ func init() {
 			name:        "help",
 			description: "Displays a help message",
 			callback:    commandHelp,
+			config:      &config,
 		},
 		"exit": {
 			name:        "exit",
 			description: "Exit the pokedex",
 			callback:    commandExit,
+			config:      &config,
 		},
 		"map": {
 			name:        "map",
-			description: "Displays name of 20 locations",
+			description: "Displays name of next 20 locations",
 			callback:    commandMap,
+			config:      &config,
 		},
+		"mapb": {
+			name:        "mapBack",
+			description: "Displays name of previous 20 locations",
+			callback:    commandMapBack,
+			config:      &config,
+		},
+	}
+	config = Config{
+		Next:     "https://pokeapi.co/api/v2/location-area/",
+		Previous: "",
 	}
 }
 
@@ -54,29 +68,65 @@ func commandHelp() error {
 	return nil
 }
 
-func commandMap() error {
-	res, err := http.Get(POKE_API_LOCATION_AREA)
+func getLocationAreas(err error, res *http.Response) (location_areas_response, error) {
+
+	location_areas := location_areas_response{}
 	if err != nil {
-		fmt.Println("Error calling PokeApi location-area endpoint")
-		return err
+		return location_areas, fmt.Errorf("Error calling PokeApi location-area endpoint")
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return fmt.Errorf("failed to read response: %w", err)
+		return location_areas, fmt.Errorf("failed to read response: %w", err)
 	}
 
-	// Und dann separat diese:
 	if res.StatusCode > 299 {
-		return fmt.Errorf("PokeApi returned error code %d: %s", res.StatusCode, body)
+		return location_areas, fmt.Errorf("PokeApi returned error code %d: %s", res.StatusCode, body)
 	}
 
-	location_area := location_areas{}
-	err = json.Unmarshal(body, &location_area)
+	err = json.Unmarshal(body, &location_areas)
 	if err != nil {
-		return fmt.Errorf("failed to unmarshal response: %w", err)
+		return location_areas, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
-	fmt.Println(location_area)
+
+	return location_areas, nil
+}
+
+func commandMap() error {
+	res, err := http.Get(config.Next)
+	locationAreas, err := getLocationAreas(err, res)
+
+	for _, locationArea := range locationAreas.Results {
+		fmt.Println(locationArea.Name)
+	}
+
+	if err != nil {
+		return err
+	}
+	config.Next = locationAreas.Next
+	config.Previous = locationAreas.Previous
+
+	return nil
+}
+
+func commandMapBack() error {
+	if config.Previous == "" {
+		fmt.Println("you're on the first page")
+		return nil
+	}
+	res, err := http.Get(config.Previous)
+	locationAreas, err := getLocationAreas(err, res)
+
+	for _, locationArea := range locationAreas.Results {
+		fmt.Println(locationArea.Name)
+	}
+
+	if err != nil {
+		return err
+	}
+	config.Next = locationAreas.Next
+	config.Previous = locationAreas.Previous
+
 	return nil
 }
