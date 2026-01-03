@@ -7,12 +7,14 @@ import (
 	"strings"
 
 	"github.com/m-heisters/pokedex-cli/internal/pokeapi"
+	"github.com/m-heisters/pokedex-cli/internal/pokecache"
 )
 
 type config struct {
 	pokeapiClient    pokeapi.Client
 	nextLocationsURL *string
 	prevLocationsURL *string
+	cache            *pokecache.Cache
 }
 
 func cleanInput(text string) []string {
