@@ -18,14 +18,16 @@ func TestCleanInput(t *testing.T) {
 		"empty string": {input: "",
 			expected: []string{""}},
 		"should lowecase everything": {input: "HelLO wOrLD",
-			expected: []string{"hello world"}},
+			expected: []string{"hello", "world"}},
 	}
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			got := cleanInput(tc.input)
 			if !reflect.DeepEqual(tc.expected, got) {
-				t.Fatalf("expected: %v got: %v", tc.expected, got)
+				t.Fatalf("expected: %v (len %d) got: %v (len %d)",
+					tc.expected, len(tc.expected), got, len(got))
+
 			}
 		})
 

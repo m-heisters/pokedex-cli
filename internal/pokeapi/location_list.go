@@ -2,10 +2,10 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/m-heisters/pokedex-cli/internal/pokecache"
 	"io"
 	"net/http"
-
-	"github.com/m-heisters/pokedex-cli/internal/pokecache"
 )
 
 // ListLocations -
@@ -21,6 +21,7 @@ func (c *Client) ListLocations(pageURL *string, cache *pokecache.Cache) (RespSha
 	if ok {
 		err := json.Unmarshal(val, &locationsResp)
 		if err == nil {
+			fmt.Println("Retrieved map data from cache")
 			return locationsResp, nil
 		}
 
