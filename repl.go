@@ -29,9 +29,13 @@ func startRepl(cfg *config) {
 		scanner.Scan()
 		parts := cleanInput(scanner.Text())
 		commandName := parts[0]
-		arg := ""
+		if len(parts) == 0 {
+			continue
+		}
+
+		args := []string{}
 		if len(parts) > 1 {
-			arg = parts[1]
+			args = parts[1:]
 		}
 
 		command, ok := getCommands()[commandName]
@@ -39,7 +43,7 @@ func startRepl(cfg *config) {
 			fmt.Println("Unknown command")
 			continue
 		}
-		err := command.callback(cfg, arg)
+		err := command.callback(cfg, args...)
 		if err != nil {
 			fmt.Println("Something went wrong")
 		}
@@ -49,7 +53,7 @@ func startRepl(cfg *config) {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config, string) error
+	callback    func(*config, ...string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -70,8 +74,8 @@ func getCommands() map[string]cliCommand {
 			callback:    commandMapb,
 		},
 		"explore": {
-			name:        "explore",
-			description: "Explore an area and discover encounters",
+			name:        "explore <location_name>",
+			description: "Explore a location",
 			callback:    commandExplore,
 		},
 		"exit": {

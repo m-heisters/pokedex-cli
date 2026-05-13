@@ -1,12 +1,16 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 )
 
-func commandExplore(cfg *config, locationName string) error {
-	fmt.Println("CommmandExplore with locationName" + locationName)
-	encounterResponse, err := cfg.pokeapiClient.ListEncounters(locationName)
+func commandExplore(cfg *config, args ...string) error {
+	if len(args) != 1 {
+		return errors.New("you must provide a location name")
+	}
+	name := args[0]
+	encounterResponse, err := cfg.pokeapiClient.GetLocation(name, cfg.cache)
 	if err != nil {
 		return err
 	}
