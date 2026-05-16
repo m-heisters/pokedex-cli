@@ -13,6 +13,7 @@ type config struct {
 	pokeapiClient    pokeapi.Client
 	nextLocationsURL *string
 	prevLocationsURL *string
+	Inventory        *pokeapi.Inventory
 }
 
 func cleanInput(text string) []string {
