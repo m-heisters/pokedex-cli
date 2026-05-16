@@ -21,16 +21,12 @@ func commandCatch(cfg *config, args ...string) error {
 	baseXp := pokemon.BaseExperience
 	rand := rand.Intn(99)
 
-	fmt.Printf("BaseXp: %d\n", baseXp)
-	fmt.Printf("Score: %d\n", rand)
 	if rand > baseXp {
 		fmt.Printf("%s was caught!\n", name)
 		cfg.Inventory.Add(pokemon)
-
 	} else {
 		fmt.Printf("%s escaped!\n", name)
 	}
 
-	cfg.Inventory.ListInventory()
 	return nil
 }
