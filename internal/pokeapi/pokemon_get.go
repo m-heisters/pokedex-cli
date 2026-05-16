@@ -10,12 +10,12 @@ func (c *Client) GetPokemon(pokemonName string) (Pokemon, error) {
 	url := baseURL + "/pokemon/" + pokemonName
 
 	if val, ok := c.cache.Get(url); ok {
-		locationResp := Pokemon{}
-		err := json.Unmarshal(val, &locationResp)
+		pokemonResp := Pokemon{}
+		err := json.Unmarshal(val, &pokemonResp)
 		if err != nil {
 			return Pokemon{}, err
 		}
-		return locationResp, nil
+		return pokemonResp, nil
 	}
 	pokemon := Pokemon{}
 
@@ -39,6 +39,7 @@ func (c *Client) GetPokemon(pokemonName string) (Pokemon, error) {
 	if err != nil {
 		return Pokemon{}, err
 	}
+	c.cache.Add(url, data)
 
 	return pokemon, nil
 }
