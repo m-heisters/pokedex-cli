@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 )
 
 func commandCatch(cfg *config, args ...string) error {
@@ -10,17 +11,23 @@ func commandCatch(cfg *config, args ...string) error {
 		return errors.New("you must provide a pokemon name")
 	}
 	name := args[0]
-	encounterResponse, err := cfg.pokeapiClient.GetPokemon(name)
+	pokemon, err := cfg.pokeapiClient.GetPokemon(name)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Throwing a Pokeball at %s...\n", args[0])
+	fmt.Printf("Throwing a Pokeball at %s...\n", name)
 
-	fmt.Println("Found Pokemon: ")
+	baseXp := pokemon.BaseExperience
+	rand := rand.Intn(99)
 
-	for _, encounter := range encounterResponse.PokemonEncounters {
-		fmt.Println(encounter.Pokemon.Name)
+	fmt.Printf("BaseXp: %d\n", baseXp)
+	fmt.Printf("Score: %d\n", rand)
+	if rand > baseXp {
+		fmt.Printf("%s was caught!\n", name)
+	} else {
+		fmt.Printf("%s escaped!\n", name)
 	}
+
 	return nil
 }
