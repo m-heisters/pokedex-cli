@@ -7,14 +7,12 @@ import (
 	"strings"
 
 	"github.com/m-heisters/pokedex-cli/internal/pokeapi"
-	"github.com/m-heisters/pokedex-cli/internal/pokecache"
 )
 
 type config struct {
 	pokeapiClient    pokeapi.Client
 	nextLocationsURL *string
 	prevLocationsURL *string
-	cache            *pokecache.Cache
 }
 
 func cleanInput(text string) []string {
@@ -77,6 +75,11 @@ func getCommands() map[string]cliCommand {
 			name:        "explore <location_name>",
 			description: "Explore a location",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch <pokemon_name>",
+			description: "Try to catch a Pokemon with a Pokeball",
+			callback:    commandCatch,
 		},
 		"exit": {
 			name:        "exit",
