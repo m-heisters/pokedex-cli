@@ -28,10 +28,5 @@ func commandCatch(cfg *config, args ...string) error {
 		fmt.Printf("%s escaped!\n", name)
 	}
 
-	fmt.Println("Already caught: ")
-	for key, _ := range cfg.caughtPokemon {
-		fmt.Println(key)
-	}
-
 	return nil
 }
