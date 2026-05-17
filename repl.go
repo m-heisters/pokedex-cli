@@ -44,7 +44,7 @@ func startRepl(cfg *config) {
 		}
 		err := command.callback(cfg, args...)
 		if err != nil {
-			fmt.Println("Something went wrong")
+			fmt.Println(err)
 		}
 	}
 }
@@ -81,6 +81,11 @@ func getCommands() map[string]cliCommand {
 			name:        "catch <pokemon_name>",
 			description: "Try to catch a Pokemon with a Pokeball",
 			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect <pokemon_name>",
+			description: "Inspect an already caught Pokemon",
+			callback:    commandInspect,
 		},
 		"exit": {
 			name:        "exit",
