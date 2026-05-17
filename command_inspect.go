@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"strconv"
 )
 
 func commandInspect(cfg *config, args ...string) error {
@@ -20,11 +19,11 @@ func commandInspect(cfg *config, args ...string) error {
 	}
 
 	fmt.Printf("Name: %s\n", pokemon.Name)
-	fmt.Printf("Heigth: %s\n", strconv.Itoa(pokemon.Height))
-	fmt.Printf("Weight: %s\n", strconv.Itoa(pokemon.Weight))
+	fmt.Printf("Heigth: %v\n", pokemon.Height)
+	fmt.Printf("Weight: %v\n", pokemon.Weight)
 	fmt.Println("Stats: ")
 	for _, stat := range pokemon.Stats {
-		fmt.Printf("-%s: %s\n", stat.Stat.Name, strconv.Itoa(stat.BaseStat))
+		fmt.Printf("-%s: %v\n", stat.Stat.Name, stat.BaseStat)
 
 	}
 	fmt.Println("Types: ")
